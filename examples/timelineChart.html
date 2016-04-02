@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <link href="../build/nv.d3.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js" charset="utf-8"></script>
+  <script src="../build/nv.d3.js"></script>
+
+  <style>
+    text {
+      font: 12px sans-serif;
+    }
+
+    svg {
+      display: block;
+    }
+
+    html,
+    body,
+    #chart1{
+      margin: 0px;
+      padding: 0px;
+      height: 100%;
+      width: 100%;
+    }
+    svg {
+      margin: 0px;
+      padding: 0px;
+    }
+    .timeline {
+      font: 10px sans-serif;
+    }
+
+    .timeline .marker {
+      stroke: #000;
+      stroke-width: 2px;
+    }
+
+    .timeline .tick line {
+      stroke: #666;
+      stroke-width: .5px;
+    }
+
+    .timeline .range.s0 {
+      fill: #eee;
+    }
+
+    .timeline .range.s1 {
+      fill: #ddd;
+    }
+
+    .timeline .range.s2 {
+      fill: #ccc;
+    }
+
+    .timeline .measure.s0 {
+      fill: lightsteelblue;
+    }
+
+    .timeline .measure.s1 {
+      fill: steelblue;
+    }
+
+    .timeline .title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .timeline .subtitle {
+      fill: #999;
+    }
+
+    .activity {
+      stroke: #000;
+      stroke-width:0px;
+      cursor: pointer;
+    }
+    .activity.down{
+      fill: #ff6347;
+    }
+    .activity.down:hover{
+      fill: #ff6347;
+    }
+
+    .activity.running{
+      fill: rgba(0,255,0,1);
+    }
+    .activity.running:hover{
+      fill: rgba(0,255,0,1);
+    }
+
+    .activity.changeover{
+      fill: #6495ED;
+    }
+
+    .activity.idle{
+      fill: #daa520;
+    }
+
+    .activity.shutdown{
+      fill: #d3d3d3;
+    }
+
+    .service-order.node{
+      fill: #d3d3d3;
+    }
+    .help-request.node{
+      fill: blue;
+    }
+
+line.timeline{
+  stroke-width: 2px;
+  stroke: #222;
+}
+  </style>
+</head>
+
+<body>
+
+  <div class="gallery" id="chart1">
+
+  </div>
+
+  <script>
+    var container = document.getElementById("chart1");
+
+    var margin = {
+        top: 5,
+        right: 40,
+        bottom: 0,
+        left: 100
+      },
+      width = container.offsetWidth - margin.left - margin.right,
+      height = 30 - margin.top - margin.bottom;
+
+    var data = [{"title":"RW55","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:56.812Z"},{"status":"running","start_time":"2016-02-04T13:01:56.812Z","end_time":"2016-02-04T13:04:29.792Z"},{"status":"down","start_time":"2016-02-04T13:04:29.792Z","end_time":"2016-02-04T13:06:34.657Z"},{"status":"running","start_time":"2016-02-04T13:06:34.657Z","end_time":"2016-02-04T13:14:27.524Z"},{"status":"down","start_time":"2016-02-04T13:14:27.524Z","end_time":"2016-02-04T13:16:26.242Z"},{"status":"running","start_time":"2016-02-04T13:16:26.242Z","end_time":"2016-02-04T13:23:33.738Z"},{"status":"down","start_time":"2016-02-04T13:23:33.738Z","end_time":"2016-02-04T13:24:13.727Z"},{"status":"running","start_time":"2016-02-04T13:24:13.727Z","end_time":"2016-02-04T13:25:47.403Z"},{"status":"down","start_time":"2016-02-04T13:25:47.403Z","end_time":"2016-02-04T13:28:24.193Z"},{"status":"running","start_time":"2016-02-04T13:28:24.193Z","end_time":"2016-02-04T13:44:53.220Z"}]},{"title":"RW54","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:12:29.422Z"},{"status":"running","start_time":"2016-02-04T13:12:29.422Z","end_time":"2016-02-04T13:14:02.463Z"},{"status":"down","start_time":"2016-02-04T13:14:02.463Z","end_time":"2016-02-04T13:16:01.906Z"},{"status":"running","start_time":"2016-02-04T13:16:01.906Z","end_time":"2016-02-04T13:24:52.665Z"},{"status":"down","start_time":"2016-02-04T13:24:52.665Z","end_time":"2016-02-04T13:25:15.578Z"},{"status":"running","start_time":"2016-02-04T13:25:15.578Z","end_time":"2016-02-04T13:28:08.987Z"},{"status":"down","start_time":"2016-02-04T13:28:08.987Z","end_time":"2016-02-04T13:30:00.531Z"},{"status":"running","start_time":"2016-02-04T13:30:00.531Z","end_time":"2016-02-04T13:32:52.461Z"},{"status":"down","start_time":"2016-02-04T13:32:52.461Z","end_time":"2016-02-04T13:35:36.174Z"},{"status":"running","start_time":"2016-02-04T13:35:36.174Z","end_time":"2016-02-04T13:44:53.230Z"}]},{"title":"RW53","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:21.444Z"},{"status":"down","start_time":"2016-02-04T13:01:21.444Z","end_time":"2016-02-04T13:02:58.010Z"},{"status":"running","start_time":"2016-02-04T13:02:58.010Z","end_time":"2016-02-04T13:08:31.210Z"},{"status":"down","start_time":"2016-02-04T13:08:31.210Z","end_time":"2016-02-04T13:08:37.730Z"},{"status":"running","start_time":"2016-02-04T13:08:37.730Z","end_time":"2016-02-04T13:18:02.553Z"},{"status":"down","start_time":"2016-02-04T13:18:02.553Z","end_time":"2016-02-04T13:19:27.763Z"},{"status":"running","start_time":"2016-02-04T13:19:27.763Z","end_time":"2016-02-04T13:21:01.784Z"},{"status":"down","start_time":"2016-02-04T13:21:01.784Z","end_time":"2016-02-04T13:21:04.098Z"},{"status":"running","start_time":"2016-02-04T13:21:04.098Z","end_time":"2016-02-04T13:32:10.425Z"},{"status":"down","start_time":"2016-02-04T13:32:10.425Z","end_time":"2016-02-04T13:32:12.349Z"},{"status":"running","start_time":"2016-02-04T13:32:12.349Z","end_time":"2016-02-04T13:35:00.519Z"},{"status":"down","start_time":"2016-02-04T13:35:00.519Z","end_time":"2016-02-04T13:35:13.870Z"},{"status":"running","start_time":"2016-02-04T13:35:13.870Z","end_time":"2016-02-04T13:36:46.787Z"},{"status":"down","start_time":"2016-02-04T13:36:46.787Z","end_time":"2016-02-04T13:38:57.967Z"},{"status":"running","start_time":"2016-02-04T13:38:57.967Z","end_time":"2016-02-04T13:40:30.819Z"},{"status":"down","start_time":"2016-02-04T13:40:30.819Z","end_time":"2016-02-04T13:42:38.967Z"},{"status":"running","start_time":"2016-02-04T13:42:38.967Z","end_time":"2016-02-04T13:44:53.237Z"}]},{"title":"RW52","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:03:52.696Z"},{"status":"down","start_time":"2016-02-04T13:03:52.696Z","end_time":"2016-02-04T13:06:13.119Z"},{"status":"running","start_time":"2016-02-04T13:06:13.119Z","end_time":"2016-02-04T13:09:06.596Z"},{"status":"down","start_time":"2016-02-04T13:09:06.596Z","end_time":"2016-02-04T13:09:56.234Z"},{"status":"running","start_time":"2016-02-04T13:09:56.234Z","end_time":"2016-02-04T13:11:30.133Z"},{"status":"down","start_time":"2016-02-04T13:11:30.133Z","end_time":"2016-02-04T13:12:12.122Z"},{"status":"running","start_time":"2016-02-04T13:12:12.122Z","end_time":"2016-02-04T13:13:45.202Z"},{"status":"down","start_time":"2016-02-04T13:13:45.202Z","end_time":"2016-02-04T13:14:09.746Z"},{"status":"running","start_time":"2016-02-04T13:14:09.746Z","end_time":"2016-02-04T13:15:42.549Z"},{"status":"down","start_time":"2016-02-04T13:15:42.549Z","end_time":"2016-02-04T13:16:41.861Z"},{"status":"running","start_time":"2016-02-04T13:16:41.861Z","end_time":"2016-02-04T13:19:19.092Z"},{"status":"down","start_time":"2016-02-04T13:19:19.092Z","end_time":"2016-02-04T13:19:44.389Z"},{"status":"running","start_time":"2016-02-04T13:19:44.389Z","end_time":"2016-02-04T13:21:16.892Z"},{"status":"down","start_time":"2016-02-04T13:21:16.892Z","end_time":"2016-02-04T13:22:18.529Z"},{"status":"running","start_time":"2016-02-04T13:22:18.529Z","end_time":"2016-02-04T13:28:11.714Z"},{"status":"down","start_time":"2016-02-04T13:28:11.714Z","end_time":"2016-02-04T13:28:17.495Z"},{"status":"running","start_time":"2016-02-04T13:28:17.495Z","end_time":"2016-02-04T13:44:53.242Z"}]},{"title":"RW51","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:47.436Z"},{"status":"running","start_time":"2016-02-04T13:01:47.436Z","end_time":"2016-02-04T13:03:20.443Z"},{"status":"down","start_time":"2016-02-04T13:03:20.443Z","end_time":"2016-02-04T13:05:00.109Z"},{"status":"running","start_time":"2016-02-04T13:05:00.109Z","end_time":"2016-02-04T13:07:39.565Z"},{"status":"down","start_time":"2016-02-04T13:07:39.565Z","end_time":"2016-02-04T13:07:43.370Z"},{"status":"running","start_time":"2016-02-04T13:07:43.370Z","end_time":"2016-02-04T13:14:45.380Z"},{"status":"down","start_time":"2016-02-04T13:14:45.380Z","end_time":"2016-02-04T13:14:47.274Z"},{"status":"running","start_time":"2016-02-04T13:14:47.274Z","end_time":"2016-02-04T13:19:25.716Z"},{"status":"down","start_time":"2016-02-04T13:19:25.716Z","end_time":"2016-02-04T13:19:39.317Z"},{"status":"running","start_time":"2016-02-04T13:19:39.317Z","end_time":"2016-02-04T13:22:25.775Z"},{"status":"down","start_time":"2016-02-04T13:22:25.775Z","end_time":"2016-02-04T13:23:18.359Z"},{"status":"running","start_time":"2016-02-04T13:23:18.359Z","end_time":"2016-02-04T13:24:51.469Z"},{"status":"down","start_time":"2016-02-04T13:24:51.469Z","end_time":"2016-02-04T13:25:30.175Z"},{"status":"running","start_time":"2016-02-04T13:25:30.175Z","end_time":"2016-02-04T13:44:53.263Z"}]},{"title":"RW50","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:02:44.195Z"},{"status":"running","start_time":"2016-02-04T13:02:44.195Z","end_time":"2016-02-04T13:10:21.845Z"},{"status":"down","start_time":"2016-02-04T13:10:21.845Z","end_time":"2016-02-04T13:10:54.005Z"},{"status":"running","start_time":"2016-02-04T13:10:54.005Z","end_time":"2016-02-04T13:44:53.264Z"}]},{"title":"RW49","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:35.893Z"},{"status":"running","start_time":"2016-02-04T13:01:35.893Z","end_time":"2016-02-04T13:06:18.570Z"},{"status":"down","start_time":"2016-02-04T13:06:18.570Z","end_time":"2016-02-04T13:06:21.858Z"},{"status":"running","start_time":"2016-02-04T13:06:21.858Z","end_time":"2016-02-04T13:16:29.440Z"},{"status":"down","start_time":"2016-02-04T13:16:29.440Z","end_time":"2016-02-04T13:16:38.428Z"},{"status":"running","start_time":"2016-02-04T13:16:38.428Z","end_time":"2016-02-04T13:33:27.304Z"},{"status":"down","start_time":"2016-02-04T13:33:27.304Z","end_time":"2016-02-04T13:34:24.199Z"},{"status":"running","start_time":"2016-02-04T13:34:24.199Z","end_time":"2016-02-04T13:44:53.266Z"}]},{"title":"RW48","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:12:21.843Z"},{"status":"running","start_time":"2016-02-04T13:12:21.843Z","end_time":"2016-02-04T13:15:04.466Z"},{"status":"down","start_time":"2016-02-04T13:15:04.466Z","end_time":"2016-02-04T13:21:53.769Z"},{"status":"running","start_time":"2016-02-04T13:21:53.769Z","end_time":"2016-02-04T13:28:40.712Z"},{"status":"down","start_time":"2016-02-04T13:28:40.712Z","end_time":"2016-02-04T13:29:00.679Z"},{"status":"running","start_time":"2016-02-04T13:29:00.679Z","end_time":"2016-02-04T13:30:34.117Z"},{"status":"down","start_time":"2016-02-04T13:30:34.117Z","end_time":"2016-02-04T13:31:04.398Z"},{"status":"running","start_time":"2016-02-04T13:31:04.398Z","end_time":"2016-02-04T13:32:37.622Z"},{"status":"down","start_time":"2016-02-04T13:32:37.622Z","end_time":"2016-02-04T13:32:46.823Z"},{"status":"running","start_time":"2016-02-04T13:32:46.823Z","end_time":"2016-02-04T13:36:33.724Z"},{"status":"down","start_time":"2016-02-04T13:36:33.724Z","end_time":"2016-02-04T13:37:14.530Z"},{"status":"running","start_time":"2016-02-04T13:37:14.530Z","end_time":"2016-02-04T13:44:53.269Z"}]},{"title":"RW47","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:34.088Z"},{"status":"down","start_time":"2016-02-04T13:01:34.088Z","end_time":"2016-02-04T13:03:19.685Z"},{"status":"running","start_time":"2016-02-04T13:03:19.685Z","end_time":"2016-02-04T13:06:46.648Z"},{"status":"down","start_time":"2016-02-04T13:06:46.648Z","end_time":"2016-02-04T13:07:24.074Z"},{"status":"running","start_time":"2016-02-04T13:07:24.074Z","end_time":"2016-02-04T13:17:55.606Z"},{"status":"down","start_time":"2016-02-04T13:17:55.606Z","end_time":"2016-02-04T13:18:01.944Z"},{"status":"running","start_time":"2016-02-04T13:18:01.944Z","end_time":"2016-02-04T13:19:34.764Z"},{"status":"down","start_time":"2016-02-04T13:19:34.764Z","end_time":"2016-02-04T13:20:27.960Z"},{"status":"running","start_time":"2016-02-04T13:20:27.960Z","end_time":"2016-02-04T13:23:43.724Z"},{"status":"down","start_time":"2016-02-04T13:23:43.724Z","end_time":"2016-02-04T13:25:15.950Z"},{"status":"running","start_time":"2016-02-04T13:25:15.950Z","end_time":"2016-02-04T13:31:18.637Z"},{"status":"down","start_time":"2016-02-04T13:31:18.637Z","end_time":"2016-02-04T13:33:04.445Z"},{"status":"running","start_time":"2016-02-04T13:33:04.445Z","end_time":"2016-02-04T13:44:53.272Z"}]},{"title":"RW46","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:02:29.614Z"},{"status":"running","start_time":"2016-02-04T13:02:29.614Z","end_time":"2016-02-04T13:20:24.595Z"},{"status":"down","start_time":"2016-02-04T13:20:24.595Z","end_time":"2016-02-04T13:20:28.598Z"},{"status":"running","start_time":"2016-02-04T13:20:28.598Z","end_time":"2016-02-04T13:44:53.272Z"}]},{"title":"RW45","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:05:00.716Z"},{"status":"running","start_time":"2016-02-04T13:05:00.716Z","end_time":"2016-02-04T13:13:31.019Z"},{"status":"down","start_time":"2016-02-04T13:13:31.019Z","end_time":"2016-02-04T13:13:35.868Z"},{"status":"running","start_time":"2016-02-04T13:13:35.868Z","end_time":"2016-02-04T13:44:53.273Z"}]},{"title":"RW44","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:25.670Z"},{"status":"down","start_time":"2016-02-04T13:01:25.670Z","end_time":"2016-02-04T13:02:33.039Z"},{"status":"running","start_time":"2016-02-04T13:02:33.039Z","end_time":"2016-02-04T13:13:09.899Z"},{"status":"down","start_time":"2016-02-04T13:13:09.899Z","end_time":"2016-02-04T13:13:10.909Z"},{"status":"running","start_time":"2016-02-04T13:13:10.909Z","end_time":"2016-02-04T13:20:26.708Z"},{"status":"down","start_time":"2016-02-04T13:20:26.708Z","end_time":"2016-02-04T13:20:51.296Z"},{"status":"running","start_time":"2016-02-04T13:20:51.296Z","end_time":"2016-02-04T13:26:30.912Z"},{"status":"down","start_time":"2016-02-04T13:26:30.912Z","end_time":"2016-02-04T13:26:48.240Z"},{"status":"running","start_time":"2016-02-04T13:26:48.240Z","end_time":"2016-02-04T13:34:52.944Z"},{"status":"down","start_time":"2016-02-04T13:34:52.944Z","end_time":"2016-02-04T13:36:20.150Z"},{"status":"running","start_time":"2016-02-04T13:36:20.150Z","end_time":"2016-02-04T13:38:44.549Z"},{"status":"down","start_time":"2016-02-04T13:38:44.549Z","end_time":"2016-02-04T13:38:46.190Z"},{"status":"running","start_time":"2016-02-04T13:38:46.190Z","end_time":"2016-02-04T13:44:53.276Z"}]},{"title":"RW43","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:13:25.884Z"},{"status":"down","start_time":"2016-02-04T13:13:25.884Z","end_time":"2016-02-04T13:13:35.245Z"},{"status":"running","start_time":"2016-02-04T13:13:35.245Z","end_time":"2016-02-04T13:20:17.661Z"},{"status":"down","start_time":"2016-02-04T13:20:17.661Z","end_time":"2016-02-04T13:22:16.465Z"},{"status":"running","start_time":"2016-02-04T13:22:16.465Z","end_time":"2016-02-04T13:23:48.872Z"},{"status":"down","start_time":"2016-02-04T13:23:48.872Z","end_time":"2016-02-04T13:24:20.186Z"},{"status":"running","start_time":"2016-02-04T13:24:20.186Z","end_time":"2016-02-04T13:44:53.279Z"}]},{"title":"RW42","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:03:31.727Z"},{"status":"running","start_time":"2016-02-04T13:03:31.727Z","end_time":"2016-02-04T13:19:18.497Z"},{"status":"down","start_time":"2016-02-04T13:19:18.497Z","end_time":"2016-02-04T13:22:31.555Z"},{"status":"running","start_time":"2016-02-04T13:22:31.555Z","end_time":"2016-02-04T13:40:40.486Z"},{"status":"down","start_time":"2016-02-04T13:40:40.486Z","end_time":"2016-02-04T13:42:09.825Z"},{"status":"running","start_time":"2016-02-04T13:42:09.825Z","end_time":"2016-02-04T13:44:53.280Z"}]},{"title":"RW41","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:32:02.227Z"},{"status":"down","start_time":"2016-02-04T13:32:02.227Z","end_time":"2016-02-04T13:32:34.311Z"},{"status":"running","start_time":"2016-02-04T13:32:34.311Z","end_time":"2016-02-04T13:44:53.280Z"}]},{"title":"FW13B","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:03:27.766Z"},{"status":"running","start_time":"2016-02-04T13:03:27.766Z","end_time":"2016-02-04T13:05:30.491Z"},{"status":"down","start_time":"2016-02-04T13:05:30.491Z","end_time":"2016-02-04T13:39:03.387Z"},{"status":"running","start_time":"2016-02-04T13:39:03.387Z","end_time":"2016-02-04T13:44:53.348Z"}]},{"title":"FW13A","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:44:53.349Z"}]},{"title":"FW12B","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:01:30.479Z"},{"status":"down","start_time":"2016-02-04T13:01:30.479Z","end_time":"2016-02-04T13:08:06.023Z"},{"status":"running","start_time":"2016-02-04T13:08:06.023Z","end_time":"2016-02-04T13:08:31.821Z"},{"status":"down","start_time":"2016-02-04T13:08:31.821Z","end_time":"2016-02-04T13:08:44.571Z"},{"status":"running","start_time":"2016-02-04T13:08:44.571Z","end_time":"2016-02-04T13:19:09.463Z"},{"status":"changeover","start_time":"2016-02-04T13:19:09.463Z","end_time":"2016-02-04T13:40:20.856Z"},{"status":"running","start_time":"2016-02-04T13:40:20.856Z","end_time":"2016-02-04T13:44:53.349Z"}]},{"title":"FW12A","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:07:27.489Z"},{"status":"running","start_time":"2016-02-04T13:07:27.489Z","end_time":"2016-02-04T13:09:45.859Z"},{"status":"down","start_time":"2016-02-04T13:09:45.859Z","end_time":"2016-02-04T13:10:24.967Z"},{"status":"running","start_time":"2016-02-04T13:10:24.967Z","end_time":"2016-02-04T13:10:43.278Z"},{"status":"down","start_time":"2016-02-04T13:10:43.278Z","end_time":"2016-02-04T13:11:38.825Z"},{"status":"changeover","start_time":"2016-02-04T13:11:38.825Z","end_time":"2016-02-04T13:12:33.765Z"},{"status":"running","start_time":"2016-02-04T13:12:33.765Z","end_time":"2016-02-04T13:18:27.040Z"},{"status":"down","start_time":"2016-02-04T13:18:27.040Z","end_time":"2016-02-04T13:19:13.295Z"},{"status":"running","start_time":"2016-02-04T13:19:13.295Z","end_time":"2016-02-04T13:19:57.131Z"},{"status":"down","start_time":"2016-02-04T13:19:57.131Z","end_time":"2016-02-04T13:20:41.519Z"},{"status":"running","start_time":"2016-02-04T13:20:41.519Z","end_time":"2016-02-04T13:22:10.109Z"},{"status":"down","start_time":"2016-02-04T13:22:10.109Z","end_time":"2016-02-04T13:24:00.276Z"},{"status":"running","start_time":"2016-02-04T13:24:00.276Z","end_time":"2016-02-04T13:24:40.885Z"},{"status":"down","start_time":"2016-02-04T13:24:40.885Z","end_time":"2016-02-04T13:25:06.181Z"},{"status":"running","start_time":"2016-02-04T13:25:06.181Z","end_time":"2016-02-04T13:26:02.876Z"},{"status":"down","start_time":"2016-02-04T13:26:02.876Z","end_time":"2016-02-04T13:33:18.000Z"},{"status":"running","start_time":"2016-02-04T13:33:18.000Z","end_time":"2016-02-04T13:40:22.682Z"},{"status":"down","start_time":"2016-02-04T13:40:22.682Z","end_time":"2016-02-04T13:41:45.794Z"},{"status":"changeover","start_time":"2016-02-04T13:41:45.794Z","end_time":"2016-02-04T13:42:46.809Z"},{"status":"running","start_time":"2016-02-04T13:42:46.809Z","end_time":"2016-02-04T13:44:53.352Z"}]},{"title":"FW11B","subtitle":"","activities":[{"status":"running","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:31:55.270Z"},{"status":"down","start_time":"2016-02-04T13:31:55.270Z","end_time":"2016-02-04T13:32:36.576Z"},{"status":"running","start_time":"2016-02-04T13:32:36.576Z","end_time":"2016-02-04T13:44:53.353Z"}]},{"title":"FW11A","subtitle":"","activities":[{"status":"down","start_time":"2016-02-04T13:00:00.000Z","end_time":"2016-02-04T13:04:24.107Z"},{"status":"running","start_time":"2016-02-04T13:04:24.107Z","end_time":"2016-02-04T13:06:55.146Z"},{"status":"down","start_time":"2016-02-04T13:06:55.146Z","end_time":"2016-02-04T13:07:47.471Z"},{"status":"changeover","start_time":"2016-02-04T13:07:47.471Z","end_time":"2016-02-04T13:08:41.680Z"},{"status":"running","start_time":"2016-02-04T13:08:41.680Z","end_time":"2016-02-04T13:14:30.548Z"},{"status":"down","start_time":"2016-02-04T13:14:30.548Z","end_time":"2016-02-04T13:14:45.741Z"},{"status":"running","start_time":"2016-02-04T13:14:45.741Z","end_time":"2016-02-04T13:18:53.757Z"},{"status":"changeover","start_time":"2016-02-04T13:18:53.757Z","end_time":"2016-02-04T13:20:15.317Z"},{"status":"running","start_time":"2016-02-04T13:20:15.317Z","end_time":"2016-02-04T13:40:52.315Z"},{"status":"down","start_time":"2016-02-04T13:40:52.315Z","end_time":"2016-02-04T13:41:49.220Z"},{"status":"running","start_time":"2016-02-04T13:41:49.220Z","end_time":"2016-02-04T13:44:53.354Z"}]}];
+    var startTime = "2016-02-04T13:00:00.000Z";
+    var endTime = "2016-02-04T21:00:00.000Z";
+
+    nv.addGraph(function() {
+      var chart = nv.models.timelineChart(data)
+        .options({
+          width: width,
+          height: height,
+          startTime: startTime,
+          endTime: endTime,
+          margin:margin
+        });
+      var svg = d3.select(container);
+      var timeline = svg.selectAll("svg")
+        .data(data)
+        .enter().append("svg")
+        .attr("class", "timeline")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", function(d, i) {
+          var _height = (i === data.length - 1) ? height + 40 : height;
+          return _height + margin.top + margin.bottom;
+        })
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(chart);
+
+      var title = timeline.append("g")
+        .style("text-anchor", "end")
+        .attr("transform", "translate(-6," + height / 2 + ")");
+
+      title.append("text")
+        .attr("class", "title")
+        .text(function(d) {
+          return d.title;
+        });
+
+      title.append("text")
+        .attr("class", "subtitle")
+        .attr("dy", "1em")
+        .text(function(d) {
+          return d.subtitle;
+        });
+
+      nv.utils.windowResize(chart.update);
+
+      return chart;
+    });
+  </script>
+
+</body>
+
+</html>
