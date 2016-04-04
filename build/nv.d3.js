@@ -14127,7 +14127,6 @@ nv.models.timeline = function(d) {
         return startTime;
       },
       set: function(_) { // left, right, top, bottom
-        debugger;
         startTime = new Date(_).getTime();
       }
     },
