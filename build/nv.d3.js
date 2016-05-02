@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.1-dev (https://github.com/novus/nvd3) 2016-04-02 */
+/* nvd3 version 1.8.1-dev (https://github.com/novus/nvd3) 2016-05-01 */
 (function(){
 
 // set up main nv object
@@ -14127,7 +14127,6 @@ nv.models.timeline = function(d) {
         return startTime;
       },
       set: function(_) { // left, right, top, bottom
-        debugger;
         startTime = new Date(_).getTime();
       }
     },
@@ -14222,7 +14221,7 @@ nv.models.timelineChart = function(d) {
           height: height,
           startTime: startTime,
           endTime: endTime,
-          margin: margin
+          margin: margin,
         });
 
       var timelineWrap = g.select('.nv-timelineWrap');
@@ -14413,7 +14412,6 @@ nv.models.timelineChart = function(d) {
         return startTime;
       },
       set: function(_) { // left, right, top, bottom
-        debugger;
         startTime = new Date(_).getTime();
       }
     },

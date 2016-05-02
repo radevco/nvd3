@@ -76,7 +76,7 @@ nv.models.timelineChart = function(d) {
           height: height,
           startTime: startTime,
           endTime: endTime,
-          margin: margin
+          margin: margin,
         });
 
       var timelineWrap = g.select('.nv-timelineWrap');
@@ -267,7 +267,6 @@ nv.models.timelineChart = function(d) {
         return startTime;
       },
       set: function(_) { // left, right, top, bottom
-        debugger;
         startTime = new Date(_).getTime();
       }
     },
